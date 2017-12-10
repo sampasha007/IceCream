@@ -12,6 +12,7 @@ func clerk(cust_id int){
 	
 	fmt.Printf("\ncust %d is being served",cust_id)
 	c1<- cust_id
+	time.Sleep(time.Millisecond * 200)
 
 }
 
@@ -26,7 +27,9 @@ func manager(){
 	fmt.Printf("\nCustomer %d is selected", id)
 	c2<-id
 	} else{
-	fmt.Printf("\nCustomer %d is Rejected,  \nTrying again.........   ", id)	
+	fmt.Printf("\nCustomer %d is Rejected  \nTrying again.........   ", id)	
+	time.Sleep(time.Millisecond * 100)
+
 	go clerk(id)
 	go manager()
 	go wait()
@@ -43,6 +46,8 @@ func wait(){
 func cashier(){
 	cust:=<-c3
 	fmt.Printf("\nCash collected for cost %d" , cust)
+	time.Sleep(time.Millisecond * 100)
+
 	
 }
 
