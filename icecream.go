@@ -1,48 +1,67 @@
 package main
 import("fmt"
-	"time"
+	   "time"
+	   "math/rand"
 )
 
-c1:= make(chan int)
+ var c1= make(chan int)
+ var c2= make(chan int)
+ var c3= make(chan int)
+
 func clerk(cust_id int){
 	
-	fmt.Println("cust %d is being served" )
+	fmt.Printf("\ncust %d is being served",cust_id)
 	c1<- cust_id
 
 }
 
 func manager(){
-	seed(time.Now().seconds)
+
+	rand.Seed(time.Now().UTC().UnixNano())
 	decision:= rand.Intn(2)
+	id:= <-c1
+	//fmt.Println(id)
 	if decision==1{
-	id:<-c1
-	fmt.Println("Customer %d is selected", id)
-	c1<-id
-	}
-	else{
+	
+	fmt.Printf("\nCustomer %d is selected", id)
+	c2<-id
+	} else{
+	fmt.Printf("\nCustomer %d is Rejected,  \nTrying again.........   ", id)	
 	go clerk(id)
+	go manager()
+	go wait()
+	go cashier()
 	}
+}
+func wait(){
+    id:=<-c2
+	time.Sleep(time.Second * 2)
+	c3<-id
+     
 }
 
 func cashier(){
-	cust<-c1
-	fmt.Println("Cash collected for cost %d" , cust)
+	cust:=<-c3
+	fmt.Printf("\nCash collected for cost %d" , cust)
+	
 }
 
 func main(){
-	var(
+	var( 
 	cust_id int=1
 	n int
 	)
+
+	fmt.Println("Welcome TO the ICECREAM SIMULATOR\n=======================\n\n")
 for{
-	fmt.Scanf(&n)
+	fmt.Scanln(&n)
 	if n==1{
 	go clerk(cust_id)
 	go manager()
 	go wait()
 	go cashier()
 	cust_id+=1
-	}
+	}else {
+		break}
 }
-else break
 }
